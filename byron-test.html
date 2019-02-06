@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Calculator</title>
+</head>
+<body>
+  <h1>Calculator</h1>
+  <form id='calc'>
+    <label>Operand 1: <input type='number' id='n1' /></label>
+    <label>Operand 2: <input type='number' id='n2' /></label>
+    <radiogroup id='operators'></radiogroup>
+    <input type='submit' />
+  </form>
+  <h2>Your result is&hellip; <span id='result'></span></h2>
+  <script>
+    const operators = [
+      {label: '+', key: 'plus', func: (a,b) => a+b },
+      {label: '-', key: 'minus', func: (a,b) => a-b },
+      {label: '&times;', key: 'times', func: (a,b) => a*b },
+      {label: '&divide;', key: 'divide', func: (a,b) => a/b },
+    ]
+    const operatorHTML = operators.map(op => {
+      return `<label>${op.label} <input type='radio' name='op' value='${op.key}' /></label>`
+    }).join('')
+
+    const operand1El = document.getElementById('n1')
+    const operand2El = document.getElementById('n2')
+    const resultEl = document.getElementById('result')
+    document.getElementById('operators').innerHTML = operatorHTML
+
+    document.getElementById('calc').onsubmit = (e) => {
+      e.preventDefault()
+      const selectedRadio = document.querySelector(`input[name='op']:checked`)
+      if(!selectedRadio) { return }
+      const operatorKey = selectedRadio.value
+      const operationFunc = operators.find(el => el.key === operatorKey).func
+      const operand1 = parseFloat(operand1El.value)
+      const operand2 = parseFloat(operand2El.value)
+      if(isNaN(operand1) || isNaN(operand2)) { return }
+      const result = operationFunc(operand1, operand2)
+      resultEl.innerHTML = result
+    }
+  </script>
+</body>
+</html>
